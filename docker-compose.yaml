@@ -1,0 +1,41 @@
+version: "3"
+
+services:
+  zk1:
+    container_name: zk1
+    image: zookeeper:3.4
+    
+
+  kafka1:
+    container_name: kafka1
+    image: suddutt1/kafka:2.2
+    tty: true
+    volumes:
+    - ./:/config
+    command: /bin/bash -c "cd /opt/kafka && bin/kafka-server-start.sh /config/k1.properties "
+    ports:
+    - 9092:9092
+    depends_on:
+    - zk1
+    
+  kafka2:
+    container_name: kafka2
+    image: suddutt1/kafka:2.2
+    tty: true
+    volumes:
+    - ./:/config
+    command: /bin/bash -c "cd /opt/kafka && bin/kafka-server-start.sh /config/k2.properties "
+    ports:
+    - 10092:9092
+    depends_on:
+    - zk1  
+  
+  cli:
+    container_name: cli
+    image: suddutt1/kafka:2.2
+    tty: true
+    volumes:
+    - ./:/config
+    depends_on:
+    - kafka1
+    - kafka2
