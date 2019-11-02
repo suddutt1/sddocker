@@ -1,0 +1,963 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "description": "The following APIs are provided for Digital Commercial Communication Platform regulated by TRAI. Followin APIs are for scubbing as a service functions",
+    "version": "2.1.0",
+    "title": "API for Digital Commercial Communication Platform Scubbing Functions"
+  },
+  "servers": [
+    {
+      "url": "http://0.0.0.0/api/",
+      "description": "Our API"
+    }
+  ],
+  "paths": {
+    "/process/scrubbing/scrubvoicepromo": {
+      "post": {
+        "summary": "Registers a Voice scrubbing request for a future time",
+        "description": "Registers a Voice scrubbing request for a future time.This api should be consumeed by scrubbing UI module.",
+        "tags": [
+          "voice-scrubbing-from-ui"
+        ],
+        "operationId": "voiceui",
+        "requestBody": {
+          "description": "Voice scrub request details",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VoiceScrubRequestInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VoiceScrubRequestOutput"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ScrubInput": {
+        "type": "object",
+        "required": [
+          "accountid",
+          "messageid",
+          "smstype",
+          "headerid",
+          "templateid",
+          "targetmsisdn",
+          "entityid",
+          "secret",
+          "smsconent"
+        ],
+        "properties": {
+          "accountid": {
+            "type": "string",
+            "description": "Account ID as configured in SMPP system"
+          },
+          "messageid": {
+            "type": "string",
+            "description": "Message ID in hex"
+          },
+          "smstype": {
+            "type": "string",
+            "description": "SMS message type. Possible values are P-Promo, SE-Service Explicit, SI- Service Implicit , T- Transaction"
+          },
+          "headerid": {
+            "type": "string",
+            "description": "Header of the SMS"
+          },
+          "templateid": {
+            "type": "string",
+            "description": "Content Template ID of the SMS content"
+          },
+          "targetmsisdn": {
+            "type": "string",
+            "description": "MSISDN to send message"
+          },
+          "entityid": {
+            "type": "string",
+            "description": "Owner entity ID of the header"
+          },
+          "secret": {
+            "type": "string",
+            "description": "Entity secret for consent verification. Base64 encoded string"
+          },
+          "smsconent": {
+            "type": "string",
+            "description": "Content of the SMS to send"
+          }
+        }
+      },
+      "ScrubOutput": {
+        "type": "object",
+        "required": [
+          "accountid",
+          "messageid",
+          "headerid",
+          "templateid",
+          "targetmsisdn",
+          "scrubResult",
+          "entityid",
+          "secret",
+          "smsconent"
+        ],
+        "properties": {
+          "accountid": {
+            "type": "string",
+            "description": "Account ID as configured in SMPP system"
+          },
+          "messageid": {
+            "type": "string",
+            "description": "Message ID in hex"
+          },
+          "headerid": {
+            "type": "string",
+            "description": "Header of the SMS"
+          },
+          "templateid": {
+            "type": "string",
+            "description": "Template ID of the SMS content"
+          },
+          "targetmsisdn": {
+            "type": "string",
+            "description": "MSISDN to send message"
+          },
+          "scrubResult": {
+            "type": "boolean",
+            "description": "Scrubbing result. If true message can be sent,false if message should not be sent"
+          },
+          "entityid": {
+            "type": "string",
+            "description": "Owner entity ID of the header"
+          },
+          "secret": {
+            "type": "string",
+            "description": "Entity secret for consent verification. Base64 encoded string"
+          },
+          "smsconent": {
+            "type": "string",
+            "description": "Content of the SMS to send"
+          }
+        }
+      },
+      "BulkScrubOutput": {
+        "type": "object",
+        "required": [
+          "accountid",
+          "headerid",
+          "templateid",
+          "scrubPassed",
+          "scrubFailed",
+          "entityid",
+          "secret",
+          "smsconent"
+        ],
+        "properties": {
+          "accountid": {
+            "type": "string",
+            "description": "Account ID as configured in SMPP system"
+          },
+          "headerid": {
+            "type": "string",
+            "description": "Header of the SMS"
+          },
+          "templateod": {
+            "type": "string",
+            "description": "Template ID of the SMS content"
+          },
+          "scrubPassed": {
+            "type": "array",
+            "description": "List of MSISDN where message could be sent",
+            "items": {
+              "type": "string"
+            }
+          },
+          "scrubFailed": {
+            "type": "array",
+            "description": "List of MSISDN where message should NOT be sent",
+            "items": {
+              "type": "string"
+            }
+          },
+          "entityid": {
+            "type": "string",
+            "description": "Owner entity ID of the header"
+          },
+          "secret": {
+            "type": "string",
+            "description": "Entity secret for consent verification. Base64 encoded string"
+          },
+          "smsconent": {
+            "type": "string",
+            "description": "Content of the SMS to send"
+          }
+        }
+      },
+      "BulkScrubInput": {
+        "type": "object",
+        "required": [
+          "accountid",
+          "headerid",
+          "templateid",
+          "msisdn",
+          "smstype",
+          "entityid",
+          "secret",
+          "smsconent"
+        ],
+        "properties": {
+          "accountid": {
+            "type": "string",
+            "description": "Account ID as configured in SMPP system"
+          },
+          "headerid": {
+            "type": "string",
+            "description": "Header of the SMS"
+          },
+          "smstype": {
+            "type": "string",
+            "description": "SMS message type. Possible values are P-Promo, SE-Service Explicit, SI- Service Implicit , T- Transaction"
+          },
+          "templateid": {
+            "type": "string",
+            "description": "Template ID of the SMS content"
+          },
+          "msisdn": {
+            "type": "array",
+            "description": "List of MSISDN to send message",
+            "items": {
+              "type": "string"
+            }
+          },
+          "entityid": {
+            "type": "string",
+            "description": "Owner entity ID of the header"
+          },
+          "secret": {
+            "type": "string",
+            "description": "Entity secret for consent verification. Base64 encoded string"
+          },
+          "smsconent": {
+            "type": "string",
+            "description": "Content of the SMS to send"
+          }
+        }
+      },
+      "PreValidationMessage": {
+        "type": "object",
+        "required": [
+          "msisdn",
+          "msg"
+        ],
+        "properties": {
+          "msisdn": {
+            "type": "string",
+            "description": "MSISDN number for which validation message is generated"
+          },
+          "msg": {
+            "type": "string",
+            "description": "Prevalidation message for the msisdn"
+          }
+        }
+      },
+      "ScrubDetails": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "SCRUBBING_PENDING",
+              "SCRUBBING_INPROGRESS",
+              "SCRUBBING_COMPLETED",
+              "DELIVERY_COMPLETED",
+              "SCRUBBING_CANCELLED"
+            ],
+            "description": "Status of the scrubbing request"
+          },
+          "scrubTokenId": {
+            "type": "string",
+            "description": "Scrub token id a 34 byte long unique identifier"
+          },
+          "cancelBy": {
+            "type": "string",
+            "format": "YYYY-MM-DDTHH:MM:SS+05:30",
+            "description": "Till what time cancellation of this scrub token would be accpeted"
+          },
+          "tokenExpiry": {
+            "type": "string",
+            "format": "YYYY-MM-DDTHH:MM:SS+05:30",
+            "description": "Scrub token expiery date"
+          },
+          "inputSize": {
+            "type": "integer",
+            "description": "Length of the input msisdn provided as a input"
+          },
+          "validNumberCount": {
+            "type": "integer",
+            "description": "Number of valid msisdns in the given input"
+          },
+          "invalidNumberCount": {
+            "type": "integer",
+            "description": "Number of invalid msisdns in the given input"
+          },
+          "scrubbedNumberCount": {
+            "type": "integer",
+            "description": "Number of msisdns where communication will be sent after checking the preferences. This field will be contain a valid value after scubbing is completed."
+          },
+          "blockedNumbersCount": {
+            "type": "integer",
+            "description": "Number of msisdns where communication will  not be sent.This field will be contain a valid value after scubbing is completed"
+          },
+          "templateid": {
+            "type": "string",
+            "description": "Registered Template id to be used for message generation"
+          },
+          "headerid": {
+            "type": "string",
+            "description": "Registerd header id/CLI to be used while sending the message "
+          },
+          "deliveryTimeBand": {
+            "type": "string",
+            "enum": [
+              "21",
+              "22",
+              "23",
+              "24",
+              "25",
+              "26",
+              "27",
+              "28",
+              "29"
+            ],
+            "description": "Target message/communication delivery time band code as defined by the UCC regulation"
+          },
+          "deliverOn": {
+            "type": "array",
+            "description": "Target date of message delivery. As of now API considers only the first entry in the array. Rest are ignored",
+            "items": {
+              "type": "string",
+              "format": "YYYY-MM-DD"
+            }
+          },
+          "requester": {
+            "type": "string",
+            "description": "API requeter id"
+          },
+          "messageType": {
+            "type": "string",
+            "enum": [
+              "P",
+              "SE",
+              "SI",
+              "T"
+            ],
+            "description": "P-Promo, SE-Service Explicit, SI- Service Implicit , T- Transaction"
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "11",
+              "12",
+              "13",
+              "14",
+              "15"
+            ],
+            "description": "Mode of communication as defined in the UCC regulation"
+          },
+          "categoryID": {
+            "type": "string",
+            "enum": [
+              "0",
+              "1",
+              "2",
+              "3",
+              "4",
+              "5",
+              "6",
+              "7",
+              "8"
+            ],
+            "description": "Target message category id as defined in the UCC regulation. 0 means send message to numbers those are not registered in DLT"
+          },
+          "optType": {
+            "type": "string",
+            "enum": [
+              "scrubbing+delivery"
+            ],
+            "description": "Type of scrubbing service requested by the user."
+          },
+          "msisdnwp": {
+            "type": "array",
+            "description": "List of MSISDN with message paramters. This field will not apprear in the search results",
+            "items": {
+              "type": "array",
+              "description": "First element of the array should be the msisdn number. Rest of the element would be considered as message parameters. If no message parameters need not passed, then pass only msisdn as the first element of the array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "prevalidationMessages": {
+            "type": "array",
+            "description": "Prevalidation messages for the input numbers. Will be available after prevalidation process is done after the submission",
+            "items": {
+              "$ref": "#/components/schemas/PreValidationMessage"
+            }
+          },
+          "entityEmailId": {
+            "type": "array",
+            "description": "Emails ids to send mail for prevalidation and scubbing completion",
+            "items": {
+              "type": "string",
+              "format": "email"
+            }
+          },
+          "entityMobile": {
+            "type": "string",
+            "description": "Mobile id of the entity regiater with the request"
+          },
+          "scrubbingStartDate": {
+            "type": "string",
+            "format": "YYYY-MM-DDTHH:MM:SS+05:30",
+            "description": "Scrubbing process actual start date in system "
+          },
+          "scrubbingEndDate": {
+            "type": "string",
+            "format": "YYYY-MM-DDTHH:MM:SS+05:30",
+            "description": "Scrubbing process actual end date in system "
+          },
+          "deliveryStartDate": {
+            "type": "string",
+            "format": "YYYY-MM-DDTHH:MM:SS+05:30",
+            "description": "Delivery process actual start date in system "
+          },
+          "deliveryEndDate": {
+            "type": "string",
+            "format": "YYYY-MM-DDTHH:MM:SS+05:30",
+            "description": "Delivery process actual end date in system "
+          },
+          "scrubReqDate": {
+            "type": "string",
+            "format": "YYYY-MM-DDTHH:MM:SS+05:30",
+            "description": "Scrub request created on the system"
+          },
+          "createTs": {
+            "type": "string",
+            "format": "YYYY-MM-DDTHH:MM:SS+05:30",
+            "description": "Record creation date time"
+          },
+          "updateTs": {
+            "type": "string",
+            "format": "YYYY-MM-DDTHH:MM:SS+05:30",
+            "description": "Record update date time"
+          },
+          "updatedBy": {
+            "type": "string",
+            "description": "Record updated by user id"
+          },
+          "responseCode": {
+            "$ref": "#/components/schemas/ServiceErrorCode"
+          }
+        }
+      },
+      "VoiceScrubRequestInput": {
+        "type": "object",
+        "description": "Voice scrubbing request input details",
+        "required": [
+          "requester",
+          "campaignStartTime",
+          "campaignStartDate",
+          "templateid",
+          "headerid",
+          "msisdnwp",
+          "entityEmailId",
+          "entityMobile"
+        ],
+        "properties": {
+          "requester": {
+            "type": "string",
+            "description": "API requeter id"
+          },
+          "campaignStartTime": {
+            "type": "string",
+            "format": "HH",
+            "description": "Campaign start time . 24 hous format. Valid values are 00 to 23"
+          },
+          "campaignStartDate": {
+            "type": "string",
+            "format": "YYYY-MM-DD",
+            "description": "Campaign start date."
+          },
+          "templateid": {
+            "type": "string",
+            "description": "Registered Template id to be used for message generation"
+          },
+          "headerid": {
+            "type": "string",
+            "description": "Registerd header id/CLI to be used while sending the message "
+          },
+          "msisdnwp": {
+            "type": "array",
+            "description": "List of MSISDN where voice calls will be dialed",
+            "items": {
+              "type": "array",
+              "description": "First element of the array should be the msisdn number.",
+              "items": {
+                "type": "string",
+                "maxItems": 1
+              }
+            }
+          },
+          "entityEmailId": {
+            "type": "array",
+            "description": "Emails ids to send mail for prevalidation and scubbing completion",
+            "items": {
+              "type": "string",
+              "format": "email"
+            }
+          },
+          "entityMobile": {
+            "type": "string",
+            "description": "Mobile id of the entity regiater with the request"
+          }
+        }
+      },
+      "VoiceScrubgActualNumResponse": {
+        "type": "object",
+        "description": "Voice scrubbing actual number mapping response with retry count",
+        "properties": {
+          "isSuccess": {
+            "type": "boolean",
+            "description": "true if call is successful"
+          },
+          "ts": {
+            "type": "string",
+            "description": "Server time-stamp"
+          },
+          "response": {
+            "type": "object",
+            "properties": {
+              "message": {
+                "type": "string",
+                "description": "Retrieval message"
+              },
+              "orginalnumber": {
+                "type": "string",
+                "description": "Original msisdn given as input"
+              },
+              "retryCount": {
+                "type": "integer",
+                "description": "Retry count including this call"
+              },
+              "lastAccessed": {
+                "type": "string",
+                "description": "Last accessed date for coversion ",
+                "format": "YYYY-MM-DDTHH:MM:SS+05:30"
+              },
+              "responseCode": {
+                "$ref": "#/components/schemas/ServiceErrorCode"
+              }
+            }
+          }
+        }
+      },
+      "VoiceScrubRequestOutput": {
+        "type": "object",
+        "description": "Voice Scrub request response",
+        "properties": {
+          "isSuccess": {
+            "type": "boolean",
+            "description": "true if call is successful"
+          },
+          "ts": {
+            "type": "string",
+            "description": "Server time-stamp"
+          },
+          "response": {
+            "$ref": "#/components/schemas/VoiceScrubDetails"
+          }
+        }
+      },
+      "VoiceScrubDetails": {
+        "type": "object",
+        "description": "Voice scrubbing details",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "SCRUBBING_PENDING",
+              "SCRUBBING_CANCELLED"
+            ],
+            "description": "Status of the scrubbing request"
+          },
+          "scrubTokenId": {
+            "type": "string",
+            "description": "Scrub token id . 6 numeric digits"
+          },
+          "cancelBy": {
+            "type": "string",
+            "format": "YYYY-MM-DDTHH:MM:SS+05:30",
+            "description": "Till what time cancellation of this scrub token would be accpeted"
+          },
+          "tokenExpiry": {
+            "type": "string",
+            "format": "YYYY-MM-DDTHH:MM:SS+05:30",
+            "description": "Scrub token expiery date"
+          },
+          "inputSize": {
+            "type": "integer",
+            "description": "Length of the input msisdn provided as a input"
+          },
+          "validNumberCount": {
+            "type": "integer",
+            "description": "Number of valid msisdns in the given input"
+          },
+          "invalidNumberCount": {
+            "type": "integer",
+            "description": "Number of invalid msisdns in the given input"
+          },
+          "maxRetry": {
+            "type": "integer",
+            "description": "Maximum retry available for each of the virtual numbers"
+          },
+          "templateid": {
+            "type": "string",
+            "description": "Registered Template id to be used for message generation"
+          },
+          "headerid": {
+            "type": "string",
+            "description": "Registerd header id/CLI to be used while sending the message "
+          },
+          "campaignStartTime": {
+            "type": "string",
+            "format": "HH",
+            "description": "Campaign start time . 24 hous format. Valid values are 00 to 23"
+          },
+          "campaignStartDate": {
+            "type": "string",
+            "format": "YYYY-MM-DD",
+            "description": "Campaign start date."
+          },
+          "requester": {
+            "type": "string",
+            "description": "API requeter id"
+          },
+          "categoryID": {
+            "type": "string",
+            "enum": [
+              "0",
+              "1",
+              "2",
+              "3",
+              "4",
+              "5",
+              "6",
+              "7",
+              "8"
+            ],
+            "description": "Target message category id as defined in the UCC regulation. 0 means send message to numbers those are not registered in DLT"
+          },
+          "msisdnwp": {
+            "type": "array",
+            "description": "List of MSISDN where voice calls will be dialed. This field will not apprear in the search results",
+            "items": {
+              "type": "array",
+              "description": "First element of the array should be the msisdn number.",
+              "items": {
+                "type": "string",
+                "maxItems": 1
+              }
+            }
+          },
+          "prevalidationMessages": {
+            "type": "array",
+            "description": "Prevalidation messages for the input numbers. Will be available after prevalidation process is done after the submission",
+            "items": {
+              "$ref": "#/components/schemas/PreValidationMessage"
+            }
+          },
+          "virtualNumbers": {
+            "type": "array",
+            "description": "Virtual number details",
+            "items": {
+              "type": "object",
+              "properties": {
+                "vnum": {
+                  "type": "string",
+                  "description": "Virtual number. It is a 15 digit number."
+                },
+                "retryCount": {
+                  "type": "integer",
+                  "description": "Retry counts"
+                },
+                "lastAccessed": {
+                  "type": "string",
+                  "description": "Last accessed date for coversion ",
+                  "format": "YYYY-MM-DDTHH:MM:SS+05:30"
+                }
+              }
+            }
+          },
+          "entityEmailId": {
+            "type": "array",
+            "description": "Emails ids to send mail for prevalidation and scubbing completion",
+            "items": {
+              "type": "string",
+              "format": "email"
+            }
+          },
+          "entityMobile": {
+            "type": "string",
+            "description": "Mobile id of the entity regiater with the request"
+          },
+          "createTs": {
+            "type": "string",
+            "format": "YYYY-MM-DDTHH:MM:SS+05:30",
+            "description": "Record creation date time"
+          },
+          "updateTs": {
+            "type": "string",
+            "format": "YYYY-MM-DDTHH:MM:SS+05:30",
+            "description": "Record update date time"
+          },
+          "updatedBy": {
+            "type": "string",
+            "description": "Record updated by user id"
+          },
+          "responseCode": {
+            "$ref": "#/components/schemas/ServiceErrorCode"
+          }
+        }
+      },
+      "SearchScrubRecordsInput": {
+        "type": "object",
+        "description": "Search input for scrub records",
+        "properties": {
+          "requester": {
+            "type": "string",
+            "description": "Request raised by "
+          },
+          "cmode": {
+            "type": "string",
+            "description": "Communication mode as described in the UCC regulation",
+            "enum": [
+              "11",
+              "12",
+              "13",
+              "14",
+              "15"
+            ]
+          },
+          "startdate": {
+            "type": "string",
+            "description": "Scrub request date rage start",
+            "format": "YYYY-MM-DD"
+          },
+          "enddate": {
+            "type": "string",
+            "description": "Scrub request date rage end",
+            "format": "YYYY-MM-DD"
+          },
+          "optType": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "scrubbing+delivery"
+            ],
+            "description": "Type of scrubbing service requested by the user."
+          }
+        }
+      },
+      "SearchByRequesterInput": {
+        "type": "object",
+        "description": "Search input for scrub records by a user",
+        "required": [
+          "requester"
+        ],
+        "properties": {
+          "requester": {
+            "type": "string",
+            "description": "Request raised by "
+          }
+        }
+      },
+      "SearchScrubRecordsResults": {
+        "type": "object",
+        "description": "Scrub request search response",
+        "properties": {
+          "isSuccess": {
+            "type": "boolean",
+            "description": "true if call is successful"
+          },
+          "ts": {
+            "type": "string",
+            "description": "Server time-stamp"
+          },
+          "response": {
+            "type": "object",
+            "description": "Response object ",
+            "properties": {
+              "data": {
+                "type": "array",
+                "description": "Search results. Empty if no results found",
+                "items": {
+                  "$ref": "#/components/schemas/ScrubDetails"
+                }
+              },
+              "message": {
+                "type": "string",
+                "description": "Descriptive message of the api response"
+              }
+            }
+          }
+        }
+      },
+      "ScrubRequestCancelResult": {
+        "type": "object",
+        "description": "Scrub request cancellation response",
+        "properties": {
+          "isSuccess": {
+            "type": "boolean",
+            "description": "true if call is successful"
+          },
+          "ts": {
+            "type": "string",
+            "description": "Server time-stamp"
+          },
+          "response": {
+            "type": "object",
+            "description": "Response object ",
+            "properties": {
+              "message": {
+                "type": "string",
+                "description": "Descriptive message of the api response"
+              },
+              "scrubTokenId": {
+                "type": "string",
+                "description": "Scrub token id .Same as the input provided"
+              },
+              "updateTs": {
+                "type": "string",
+                "format": "YYYY-MM-DDTHH:MM:SS+05:30",
+                "description": "Record update date time"
+              },
+              "responseCode": {
+                "$ref": "#/components/schemas/ServiceErrorCode"
+              }
+            }
+          }
+        }
+      },
+      "ScrubRequestInput": {
+        "type": "object",
+        "description": "Request object for initiating a scrubbing request",
+        "required": [
+          "templateid",
+          "requester",
+          "headerid",
+          "deliveryTimeBand",
+          "deliverOn",
+          "msisdnwp",
+          "entityEmailId",
+          "entityMobile"
+        ],
+        "properties": {
+          "requester": {
+            "type": "string",
+            "description": "API requeter id"
+          },
+          "templateid": {
+            "type": "string",
+            "description": "Registered Template id to be used for message generation"
+          },
+          "headerid": {
+            "type": "string",
+            "description": "Registerd header id/CLI to be used while sending the message "
+          },
+          "deliveryTimeBand": {
+            "type": "string",
+            "enum": [
+              "21",
+              "22",
+              "23",
+              "24",
+              "25",
+              "26",
+              "27",
+              "28",
+              "29"
+            ],
+            "description": "Target message/communication delivery time band code as defined by the UCC regulation"
+          },
+          "deliverOn": {
+            "type": "array",
+            "description": "Target date of message delivery. As of now API considers only the first entry in the array. Rest are ignored",
+            "items": {
+              "type": "string",
+              "format": "YYYY-MM-DD"
+            }
+          },
+          "msisdnwp": {
+            "type": "array",
+            "description": "List of MSISDN with message paramters. This field will not apprear in the search results",
+            "items": {
+              "type": "array",
+              "description": "First element of the array should be the msisdn number. Rest of the element would be considered as message parameters. If no message parameters need not passed, then pass only msisdn as the first element of the array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "entityEmailId": {
+            "type": "array",
+            "description": "Emails ids to send mail for prevalidation and scubbing completion",
+            "items": {
+              "type": "string",
+              "format": "email"
+            }
+          },
+          "entityMobile": {
+            "type": "string",
+            "description": "Mobile id of the entity regiater with the request"
+          }
+        }
+      },
+      "ScrubRequestOutput": {
+        "type": "object",
+        "description": "Scrub request response",
+        "properties": {
+          "isSuccess": {
+            "type": "boolean",
+            "description": "true if call is successful"
+          },
+          "ts": {
+            "type": "string",
+            "description": "Server time-stamp"
+          },
+          "response": {
+            "$ref": "#/components/schemas/ScrubDetails"
+          }
+        }
+      },
+      "ServiceErrorCode": {
+        "type": "integer",
+        "default": 200,
+        "description": "Error codes \n          `200`  Successful operation\n          `601`  No Requestor is provided\n          `602`  No delivery time bands are provided\n          `603`  Invalid delivery time band provided\n          `604`  Invalid delivery date provided\n          `605`  delivery date Can not be a Past Date\n          `606`  No msisdn numbers provided\n          `607`  Both msisdn numbers and msidnnumbers with parameters can not be given. Use any one of them\n          `608`  Minimum number of msisdn number are not provided\n          `609`  Maximum number of msisdn number are exceeded\n          `610`  Header Should be 6 digit \n          `611`  Invalid Header id for this Entity\n          `612`  Invalid Header id\n          `613`  Invalid Template id\n          `614`  Template dose not match with header\n          `615`  Template or header Invalid\n          `616`  Invalid category provided\n          `617`  Record not found\n          `619`  Value not provided\n          `500`  Unable to unmarshal \n          `621`  Time Band mismatched\n          `622`  Token Expired.\n          `623`  Delivery initiate\n          `624`  ScubToken not provided\n          `625`  Invalid Timeband provided\n          `626`  Message Already Delivered\n          `627`  Schudule Scrubbing and Delivery disable\n          `628`  Schudule Scrubbing disable\n          `629`  Time Band pased for the day \n          `630`  Schedule Scrubbing date should be less then 7 days\n          `631`  Entity ID is not active\n          `632`  The input Entity is Blacklisted\n          `633`  The input Header is Blacklisted\n          `634`  The input Template is Blacklisted\n          `665`  Virtual Numberis not provided/incorrect\n          `666`  SMS Content missmatch\n          `670`  Fail to Disable Schedule Scrubbing\n          `730`  Invalid Date Format for Scrub request\n          `710`  Invalid MSISDNid\n          `789`  Invalid input count found for array index \n          `671`  Fail to Disable Schudule Scrubbing and Delivery\n          `672`  Max retry for vitual number exceeded\n          `673`  HeaderId invalidated\n          `674`  TemplateId invalidated\n          `675`  Entity invalidated \n          `676`  Entity blacklisted\n\n\n \n \n"
+      }
+    }
+  }
+}
